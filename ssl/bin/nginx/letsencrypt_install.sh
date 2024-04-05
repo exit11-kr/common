@@ -27,12 +27,15 @@ echo "1. apt-get install letsencrypt ..."
 apt-get install letsencrypt
 
 echo "2. sudo letsencrypt ..."
-sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOMAIN} -d www.${DOMAIN}
+# sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOMAIN} -d www.${DOMAIN}
+sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOMAIN}
 
 ## 인증서 교체
 echo "3. Replacing cert files ..."
-cp ${LETSENCRYPT_CERT_PATH}/fullchain.pem /var/www/ssl/certs/${DOMAIN}/${CERT_FILE}
-cp ${LETSENCRYPT_CERT_PATH}/privkey.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE}
+# cp ${LETSENCRYPT_CERT_PATH}/fullchain.pem /var/www/ssl/certs/${DOMAIN}/${CERT_FILE}
+# cp ${LETSENCRYPT_CERT_PATH}/privkey.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE}
+cp ${LETSENCRYPT_CERT_PATH}/fullchain2.pem /var/www/ssl/certs/${DOMAIN}/${CERT_FILE}
+cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE}
 
 # 인증서 경로 수정: /opt/docker/etc/nginx/vhost.ssl.conf
 echo "4. Update cert path(vhost.ssl.conf) ..."

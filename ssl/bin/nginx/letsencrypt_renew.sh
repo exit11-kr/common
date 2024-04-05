@@ -24,7 +24,7 @@ CERT_FILE="cert.pem"
 KEY_FILE="key.pem"
 CERT_TYPE="letsencrypt"
 
-LETSENCRYPT_CERT_PATH="/etc/letsencrypt/live/${DOMAIN}"
+LETSENCRYPT_CERT_PATH="/etc/letsencrypt/archive/${DOMAIN}"
 
 echo "Letsencrypt renewal start ... : ${DOMAIN}"
 
@@ -49,9 +49,9 @@ sudo certbot renew --dry-run
 ## 인증서 교체
 echo "3. Replacing cert files ..."
 ### 인증서 파일
-cp ${LETSENCRYPT_CERT_PATH}/fullchain.pem ${SSL_VOL_CERT_PATH}/${CERT_FILE}
+cp ${LETSENCRYPT_CERT_PATH}/fullchain2.pem ${SSL_VOL_CERT_PATH}/${CERT_FILE}
 ### 개인키 파일
-cp ${LETSENCRYPT_CERT_PATH}/privkey.pem ${SSL_VOL_CERT_PATH}/${KEY_FILE}
+cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem ${SSL_VOL_CERT_PATH}/${KEY_FILE}
 
 ## 웹서비스 재시작
 echo "4. restart nginx:nginxd ..."
