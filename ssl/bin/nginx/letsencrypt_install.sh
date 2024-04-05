@@ -15,7 +15,7 @@ if [[ -z $P__DOMAIN ]]; then
 fi
 
 DOMAIN=${P__DOMAIN}
-LETSENCRYPT_CERT_PATH="/etc/letsencrypt/live/${DOMAIN}"
+LETSENCRYPT_CERT_PATH="/etc/letsencrypt/archive/${DOMAIN}"
 WS_CERT_PATH="/var/www/ssl/certs/${DOMAIN}"
 VHOST_SSL_CONF_PATH="/opt/docker/etc/nginx/vhost.ssl.conf"
 CERT_FILE="cert.pem"

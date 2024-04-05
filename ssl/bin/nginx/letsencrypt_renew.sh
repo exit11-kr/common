@@ -17,7 +17,7 @@ fi
 DOMAIN=${P__DOMAIN}
 DATE_TIME=$(date "+%Y%m%d%H%M%S")
 
-SSL_VOL_ROOT="/var/ssl/"
+SSL_VOL_ROOT="/var/ssl"
 SSL_VOL_CERT_PATH="${SSL_VOL_ROOT}/certs/${DOMAIN}"
 SSL_VOL_BACKUP_PATH="${SSL_VOL_ROOT}/backup/${DOMAIN}"
 CERT_FILE="cert.pem"
