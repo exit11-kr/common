@@ -32,16 +32,14 @@ sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOM
 
 ## 인증서 교체
 echo "3. Replacing cert files ..."
-# cp ${LETSENCRYPT_CERT_PATH}/fullchain.pem /var/www/ssl/certs/${DOMAIN}/${CERT_FILE}
-# cp ${LETSENCRYPT_CERT_PATH}/privkey.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE}
-cp ${LETSENCRYPT_CERT_PATH}/fullchain2.pem /var/www/ssl/certs/${DOMAIN}/${CERT_FILE}
-cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE}
-
-# 인증서 경로 수정: /opt/docker/etc/nginx/vhost.ssl.conf
-echo "4. Update cert path(vhost.ssl.conf) ..."
 if [ ! -d "${WS_CERT_PATH}" ]; then
     mkdir -p ${WS_CERT_PATH}
 fi
+cp ${LETSENCRYPT_CERT_PATH}/fullchain2.pem ${WS_CERT_PATH}/${CERT_FILE}
+cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem ${WS_CERT_PATH}/${KEY_FILE}
+
+# 인증서 경로 수정: /opt/docker/etc/nginx/vhost.ssl.conf
+echo "4. Update cert path(vhost.ssl.conf) ..."
 sed -i "s%\(ssl_certificate[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${CERT_FILE};%g" ${VHOST_SSL_CONF_PATH}
 sed -i "s%\(ssl_certificate_key[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${KEY_FILE};%g" ${VHOST_SSL_CONF_PATH}
 ## sed -i "s%\(ssl_protocols[ \t]\+\)[a-z/.]\+;%\1TLSv1.2 TLSv1.3;%g"  ${VHOST_SSL_CONF_PATH}
