@@ -39,6 +39,9 @@ cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem /var/www/ssl/certs/${DOMAIN}/${KEY_FILE
 
 # 인증서 경로 수정: /opt/docker/etc/nginx/vhost.ssl.conf
 echo "4. Update cert path(vhost.ssl.conf) ..."
+if [ ! -d "${WS_CERT_PATH}" ]; then
+    mkdir -p ${WS_CERT_PATH}
+fi
 sed -i "s%\(ssl_certificate[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${CERT_FILE};%g" ${VHOST_SSL_CONF_PATH}
 sed -i "s%\(ssl_certificate_key[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${KEY_FILE};%g" ${VHOST_SSL_CONF_PATH}
 ## sed -i "s%\(ssl_protocols[ \t]\+\)[a-z/.]\+;%\1TLSv1.2 TLSv1.3;%g"  ${VHOST_SSL_CONF_PATH}
@@ -48,12 +51,12 @@ sed -i "s%\(ssl_certificate_key[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${KEY_FILE}
 echo "5. restart nginx:nginxd ..."
 supervisorctl restart nginx:nginxd
 
-# 인증서 갱신 스크립트 cron 항목으로 등록: 60일 마다 새벽1시에 갱신
+# 인증서 갱신 스크립트 cron 항목으로 등록: 매월 5일 새벽1시에 갱신
 ## 분-시간-일-월-요일
 echo "6. Crontab: Runs at 1 AM every 60 days ..."
 (
     crontab -u root -l
-    echo "0 1 60 * * cd /usr/local/bin && ./php /var/www/ssl/bin/letsencrypt_renew.sh >> /dev/null 2>&1"
+    echo "0 1 5 * * cd /usr/local/bin && ./php /var/www/ssl/bin/letsencrypt_renew.sh >> /dev/null 2>&1"
 ) | crontab -u root -
 
 echo "Letsencrypt install completed!!"
