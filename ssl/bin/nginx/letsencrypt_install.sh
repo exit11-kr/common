@@ -16,7 +16,7 @@ fi
 
 DOMAIN=${P__DOMAIN}
 LETSENCRYPT_CERT_PATH="/etc/letsencrypt/archive/${DOMAIN}"
-WS_CERT_PATH="/var/www/ssl/certs/${DOMAIN}"
+WS_CERT_PATH="/var/ssl/certs/${DOMAIN}"
 VHOST_SSL_CONF_PATH="/opt/docker/etc/nginx/vhost.ssl.conf"
 CERT_FILE="cert.pem"
 KEY_FILE="key.pem"
@@ -51,7 +51,7 @@ supervisorctl restart nginx:nginxd
 
 # 인증서 갱신 스크립트 cron 항목으로 등록: 매월 5일 새벽1시에 갱신
 ## 분-시간-일-월-요일
-echo "6. Crontab: Runs at 1 AM every 60 days ..."
+echo "6. Crontab: Runs at 1 a.m. on the 5th of every month ..."
 (
     crontab -u root -l
     echo "0 1 5 * * cd /usr/local/bin && ./php /var/www/ssl/bin/letsencrypt_renew.sh >> /dev/null 2>&1"
