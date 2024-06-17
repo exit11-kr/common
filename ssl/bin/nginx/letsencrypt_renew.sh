@@ -44,7 +44,10 @@ fi
 
 ## 인증서 갱신
 echo "2. certbot renew ..."
-sudo certbot renew --dry-run
+### TEST
+#### sudo certbot renew --webroot --webroot-path=/var/www/html/public -d ${DOMAIN} --dry-run
+### 실행
+sudo certbot renew --webroot --webroot-path=/var/www/html/public -d ${DOMAIN}
 
 ## 인증서 교체
 echo "3. Replacing cert files ..."

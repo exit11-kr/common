@@ -54,7 +54,7 @@ supervisorctl restart nginx:nginxd
 echo "6. Crontab: Runs at 1 a.m. on the 5th of every month ..."
 (
     crontab -u root -l
-    echo "0 1 5 * * cd /usr/local/bin && ./php /var/www/ssl/bin/letsencrypt_renew.sh >> /dev/null 2>&1"
+    echo "0 1 5 * * cd /usr/local/bin && ./php /var/common/home/ssl/bin/nginx/letsencrypt_renew.sh -d ${DOMAIN} >> /dev/null 2>&1"
 ) | crontab -u root -
 
 echo "Letsencrypt install completed!!"
