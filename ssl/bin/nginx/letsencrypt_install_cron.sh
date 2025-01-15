@@ -27,11 +27,8 @@ echo "1. apt-get install letsencrypt ..."
 apt-get install letsencrypt
 
 echo "2. sudo letsencrypt ..."
-# 인증서 발급받기(webroot 방식 인증실패로 DNS 방식으로 진행)
-## 1. IP 로깅을 허용하겠냐고 묻는 화면에서 Y 를 입력
-## 2. TXT 에 등록할 내용이 출력되면 복사
-## 3. DNS 서버에 TXT 레코드를 등록(https://www.domainclub.kr/ > 무료 웹DNS)
-sudo letsencrypt certonly --manual --preferred-challenges dns -d ${DOMAIN}
+# sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOMAIN} -d www.${DOMAIN}
+sudo letsencrypt certonly --webroot --webroot-path=/var/www/html/public -d ${DOMAIN}
 
 ## 인증서 교체
 echo "3. Replacing cert files ..."
@@ -45,9 +42,19 @@ cp ${LETSENCRYPT_CERT_PATH}/privkey2.pem ${WS_CERT_PATH}/${KEY_FILE}
 echo "4. Update cert path(vhost.ssl.conf) ..."
 sed -i "s%\(ssl_certificate[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${CERT_FILE};%g" ${VHOST_SSL_CONF_PATH}
 sed -i "s%\(ssl_certificate_key[ \t]\+\)[a-z/.]\+;%\1${WS_CERT_PATH}/${KEY_FILE};%g" ${VHOST_SSL_CONF_PATH}
+## sed -i "s%\(ssl_protocols[ \t]\+\)[a-z/.]\+;%\1TLSv1.2 TLSv1.3;%g"  ${VHOST_SSL_CONF_PATH}
+## sed -i "s%\(ssl_ciphers[ \t]\+\)[a-z/.]\+;%\1ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;%g"  ${VHOST_SSL_CONF_PATH}
 
 ## 웹서비스 재시작
 echo "5. restart nginx:nginxd ..."
 supervisorctl restart nginx:nginxd
+
+# 인증서 갱신 스크립트 cron 항목으로 등록: 매월 5일 새벽1시에 갱신
+## 분-시간-일-월-요일
+echo "6. Crontab: Runs at 1 a.m. on the 5th of every month ..."
+(
+    crontab -u root -l
+    echo "0 1 5 * * cd /usr/local/bin && ./php /var/common/home/ssl/bin/nginx/letsencrypt_renew.sh -d ${DOMAIN} >> /dev/null 2>&1"
+) | crontab -u root -
 
 echo "Letsencrypt install completed!!"
